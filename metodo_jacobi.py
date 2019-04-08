@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sat Mar 30 09:17:08 2019
-
+mini-projeto-2 Calculo Numerico
 @author: ednaldo
 """
 from numpy import dot
+import matplotlib.pyplot as plt
 
 A = [[ 0, 0, 2, 0, 0, 0, 0, 0],
      [ 0, 0, 0, 0, 0, 1, 0, 0],
@@ -17,12 +18,14 @@ A = [[ 0, 0, 2, 0, 0, 0, 0, 0],
      [ 0,-1, 0,10, 0, 1, 0, 0]
      ]
 b = [7, 66, 96, 42, 24, 0, 0, 0]
-    
+vetor_x = []
+   
 ''' Métodos Auxiliares '''
-def permutacao(A, tamanho):
+def permutacao(A, tamanho, b):
     v, aux, verifica = [], [], []
     for i in range(tamanho): verifica.append(False)
     copia_A = A.copy()
+    copia_b = b.copy()
     
     for i in range(tamanho):
         #procura linha a linha as equacoes em que a variavel eh diferente de 0
@@ -56,6 +59,7 @@ def permutacao(A, tamanho):
         #que guardou as equacoes disponiveis para cada letra), e atualizamos
         #a matriz A sem perder a original atraves da copia_A
         A[prioridade] = copia_A[v[prioridade][0]]
+        b[prioridade] = copia_b[v[prioridade][0]]
         #identificamos qual equacao serah removidade das equacoes disponiveis
         remover = v[prioridade][0]
         verifica[prioridade] = True
@@ -86,7 +90,7 @@ def diagonal_zero(A):
     for i in range(len(C)): C[i][i] = 0
     return C
 
-def jacobi(A, b, n = 10, x = chute_inicial(len(A))):
+def jacobi(A, b, vetor_x, n = 10, x = chute_inicial(len(A))):
     print ("\n\nx0: \n", x)
     #diagonal contem os valores que serao o divisor das equacoes
     d = diagonal(A)
@@ -101,6 +105,7 @@ def jacobi(A, b, n = 10, x = chute_inicial(len(A))):
         print('\nx'+str(k)+'\n', x)
         #substitui os valores de xk nas equacoes do sistema -C 
         x = (b - dot(C,x))/d
+        vetor_x.append(x)
     print('\nx'+str(n)+'\n', x)
   
 if __name__ == "__main__":
@@ -111,7 +116,12 @@ if __name__ == "__main__":
     print ("\n\nb: \n", b)
     
     #organizar matriz A
-    A = permutacao(A, tamanho_A)   
+    A = permutacao(A, tamanho_A, b)   
+    print('\n\nnovo A: \n', A)
+    print('\n\nnovo b: \n', b)
     
-    jacobi(A, b, 10)
+    jacobi(A, b, vetor_x, 5)
     
+    plt.plot(vetor_x)
+    plt.title('vetor resultante')
+    plt.show()
